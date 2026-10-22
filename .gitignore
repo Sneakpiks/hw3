@@ -1,2 +1,7 @@
 *.o
 llrec-test
+hw3_tests/
+*.o
+hw3_tests/
+*.o
+logicsim/logicsim

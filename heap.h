@@ -2,8 +2,9 @@
 #define HEAP_H
 #include <functional>
 #include <stdexcept>
+#include <vector>
 
-template <typename T, typename PComparator = std::less<T> >
+template <typename T, typename PComparator = std::less<T>>
 class Heap
 {
 public:
@@ -61,14 +62,74 @@ public:
 
 private:
   /// Add whatever helper functions and data members you need below
+  int _m;
+  PComparator _c;
+  std::vector<T> data;
 
-
-
+  void trickleUp(int idx);
+  void trickleDown(int idx);
 
 };
 
 // Add implementation of member functions here
+template <typename T, typename Comparator>
+Heap<T,Comparator>::Heap(int m, Comparator c): _m(m), _c(c){
 
+}
+
+template <typename T, typename Comparator>
+Heap<T,Comparator>::~Heap(){
+
+}
+
+template <typename T, typename Comparator>
+size_t Heap<T,Comparator>::size() const{
+  return data.size();
+}
+
+template <typename T, typename Comparator>
+bool Heap<T,Comparator>::empty() const{
+  return data.empty();
+}
+
+template <typename T, typename Comparator>
+void Heap<T,Comparator>::push(const T& item){
+  data.push_back(item);
+  trickleUp(data.size() - 1);
+}
+
+template <typename T, typename Comparator>
+void Heap<T,Comparator>::trickleUp(int idx){
+  while(idx >0)
+  {
+    int parent = (idx-1)/_m;
+    if(_c(data[idx],data[parent])){
+      std::swap(data[parent],data[idx-1]);
+      idx = parent;
+    }
+    else{
+      break;
+    }
+  }
+}
+
+template <typename T, typename Comparator>
+void Heap<T,Comparator>::trickleDown(int idx){
+  int childOne = _m * idx +1;
+  if( childOne >= data.size()){
+    return;
+  }
+  for(int i = 2;i <= _m; i++){
+    int childNext = _m * idx + i;
+    if(childNext<data.size() && _c(data[childNext], data[childOne])){
+      childOne = childNext;
+    }
+  }
+  if(_c(data[childOne], data[idx])){
+    std::swap(data[idx],data[childOne]);
+    trickleDown(childOne);
+  }
+}
 
 // We will start top() for you to handle the case of 
 // calling top on an empty heap
@@ -81,12 +142,11 @@ T const & Heap<T,PComparator>::top() const
     // ================================
     // throw the appropriate exception
     // ================================
-
-
+    throw std::underflow_error("Empty heap");
   }
   // If we get here we know the heap has at least 1 item
   // Add code to return the top element
-
+  return data[0];
 
 
 }
@@ -101,10 +161,14 @@ void Heap<T,PComparator>::pop()
     // ================================
     // throw the appropriate exception
     // ================================
-
+    throw std::underflow_error("Empty heap");
 
   }
-
+  data[0] = data.back();
+  data.pop_back();
+  if(!data.empty()){
+    trickleDown(0);
+  }
 
 
 }
