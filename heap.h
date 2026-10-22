@@ -104,7 +104,7 @@ void Heap<T,Comparator>::trickleUp(int idx){
   {
     int parent = (idx-1)/_m;
     if(_c(data[idx],data[parent])){
-      std::swap(data[parent],data[idx-1]);
+      std::swap(data[parent],data[idx]);
       idx = parent;
     }
     else{
